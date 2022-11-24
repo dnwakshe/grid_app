@@ -27,7 +27,7 @@ class _ShowGridState extends State<ShowGrid> {
   );
   List<Choice> gridList = [];
   final key = GlobalKey<ScaffoldState>();
-  final TextEditingController _searchQuery = TextEditingController();
+  late TextEditingController _searchQuery = TextEditingController();
   late bool _IsSearching;
   List<Choice> _list = [];
   List<Choice> _searchList = [];
@@ -59,8 +59,9 @@ class _ShowGridState extends State<ShowGrid> {
     _IsSearching = false;
     init_List();
   }
-  getStoredPref() async{
-    final prefs = await SharedPreferences.getInstance();
+
+  getStoredPref() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
   }
 
   void init_List() {
@@ -79,10 +80,29 @@ class _ShowGridState extends State<ShowGrid> {
         body: GridView.builder(
             itemCount: _searchList.length,
             itemBuilder: (context, index) {
-              return Uiitem(_searchList[index]);
+              return Card(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    TextField(
+                      decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.all(10.0),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.grey),
+                        ),
+                        hintText: "Enter alphabets ",
+                        hintStyle: TextStyle(color: Colors.grey),
+                      ),
+                      onChanged: (index) {
+                        print(index);
+                      },
+                    ),
+                  ],
+                ),
+              );
             },
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
+              crossAxisCount: 4,
             )));
   }
 
@@ -106,6 +126,9 @@ class _ShowGridState extends State<ShowGrid> {
                     style: const TextStyle(
                       color: Colors.white,
                     ),
+                    onSubmitted: (value) {
+                      _searchQuery = value as TextEditingController;
+                    },
                     decoration: const InputDecoration(
                         hintText: "Search here..",
                         hintStyle: TextStyle(color: Colors.white)),
@@ -131,6 +154,7 @@ class _ShowGridState extends State<ShowGrid> {
   void _handleSearchStart() {
     setState(() {
       _IsSearching = true;
+      print(_searchText);
     });
   }
 
@@ -161,6 +185,29 @@ class _ShowGridState extends State<ShowGrid> {
       return _searchList; //_searchList.map((contact) =>  Uiitem(contact)).toList();
     }
   }
+
+  Widget gridView() {
+    return Card(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          TextField(
+            decoration: const InputDecoration(
+              contentPadding: EdgeInsets.all(10.0),
+              enabledBorder: UnderlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              hintText: "Enter alphabets ",
+              hintStyle: TextStyle(color: Colors.grey),
+            ),
+            onChanged: (value) {
+              print(value);
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class Choice {
@@ -172,10 +219,15 @@ class Choice {
   final int id;
 }
 
-class Uiitem extends StatelessWidget {
+class Uiitem extends StatefulWidget {
   final Choice building;
   Uiitem(this.building);
 
+  @override
+  State<Uiitem> createState() => _UiitemState();
+}
+
+class _UiitemState extends State<Uiitem> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -188,7 +240,7 @@ class Uiitem extends StatelessWidget {
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: Colors.grey),
               ),
-              hintText: "Enter alphabets ", // pass the hint text parameter here
+              hintText: "Enter alphabets ",
               hintStyle: TextStyle(color: Colors.grey),
             ),
             onChanged: (value) {
