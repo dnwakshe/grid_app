@@ -210,7 +210,7 @@ class _ShowGridState extends State<ShowGrid> {
   }
 }
 
-class Choice {
+ class Choice {
   const Choice({
     required this.id,
     required this.title,
