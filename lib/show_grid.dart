@@ -26,31 +26,14 @@ class _ShowGridState extends State<ShowGrid> {
     color: Colors.white,
   );
   List<Choice> gridList = [];
+  // List<String> grindList =[];
   final key = GlobalKey<ScaffoldState>();
-  late TextEditingController _searchQuery = TextEditingController();
+  late String _searchQuery;
   late bool _IsSearching;
   List<Choice> _list = [];
   List<Choice> _searchList = [];
   String _searchText = "";
   late SharedPreferences prefe;
-
-  _SearchListState() {
-    _searchQuery.addListener(() {
-      if (_searchQuery.text.isEmpty) {
-        setState(() {
-          _IsSearching = false;
-          _searchText = "";
-          _buildSearchList();
-        });
-      } else {
-        setState(() {
-          _IsSearching = true;
-          _searchText = _searchQuery.text;
-          _buildSearchList();
-        });
-      }
-    });
-  }
 
   @override
   void initState() {
@@ -93,8 +76,10 @@ class _ShowGridState extends State<ShowGrid> {
                         hintText: "Enter alphabets ",
                         hintStyle: TextStyle(color: Colors.grey),
                       ),
-                      onChanged: (index) {
-                        print(index);
+                      onChanged: (value) {
+                        if (gridList[index] == index &&gridList[index].title == "") {
+                          gridList.add(Choice(id: index, title: value));
+                        }
                       },
                     ),
                   ],
@@ -122,12 +107,12 @@ class _ShowGridState extends State<ShowGrid> {
                     color: Colors.white,
                   );
                   appBarTitle = TextField(
-                    controller: _searchQuery,
                     style: const TextStyle(
                       color: Colors.white,
                     ),
                     onSubmitted: (value) {
-                      _searchQuery = value as TextEditingController;
+                      var searchText = value;
+                      print(searchText);
                     },
                     decoration: const InputDecoration(
                         hintText: "Search here..",
@@ -161,7 +146,7 @@ class _ShowGridState extends State<ShowGrid> {
   void _handleSearchEnd() {
     setState(() {
       _IsSearching = false;
-      _searchQuery.clear();
+      _searchQuery = "";
     });
   }
 
@@ -186,69 +171,35 @@ class _ShowGridState extends State<ShowGrid> {
     }
   }
 
-  Widget gridView() {
-    return Card(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          TextField(
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.all(10.0),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
-              ),
-              hintText: "Enter alphabets ",
-              hintStyle: TextStyle(color: Colors.grey),
-            ),
-            onChanged: (value) {
-              print(value);
-            },
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget gridView() {
+  //   return Card(
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  //       children: [
+  //         TextField(
+  //           decoration: const InputDecoration(
+  //             contentPadding: EdgeInsets.all(10.0),
+  //             enabledBorder: UnderlineInputBorder(
+  //               borderSide: BorderSide(color: Colors.grey),
+  //             ),
+  //             hintText: "Enter alphabets ",
+  //             hintStyle: TextStyle(color: Colors.grey),
+  //           ),
+  //           onChanged: (value) {
+  //             print(value);
+  //           },
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 }
 
- class Choice {
+class Choice {
   const Choice({
     required this.id,
     required this.title,
   });
   final String title;
   final int id;
-}
-
-class Uiitem extends StatefulWidget {
-  final Choice building;
-  Uiitem(this.building);
-
-  @override
-  State<Uiitem> createState() => _UiitemState();
-}
-
-class _UiitemState extends State<Uiitem> {
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          TextField(
-            decoration: const InputDecoration(
-              contentPadding: EdgeInsets.all(10.0),
-              enabledBorder: UnderlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
-              ),
-              hintText: "Enter alphabets ",
-              hintStyle: TextStyle(color: Colors.grey),
-            ),
-            onChanged: (value) {
-              print(value);
-            },
-          ),
-        ],
-      ),
-    );
-  }
 }
